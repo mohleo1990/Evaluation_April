@@ -1,11 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HOME</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+      .container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1em;
+      }
+      .card {
+        text-align: center;
+        border: 1px solid black;
+        border-radius: 3px;
+      }
+      .btn-add {
+        background: red;
+        color: white;
+        padding: 8px;
+        margin: 8px 0;
+        width: 90%;
+        border: none;
+        cursor: pointer
+      }
+    </style>
+  </head>
+  <body>
+    <form action="#!">
+      <input type="text" placeholder="Search here..." id="search" />
+      <input type="submit" />
+    </form>
+    <div class="container">
+      <!-- <div class="card">
+        <img src="https://picsum.photos/200" />
+        <p>Regukar Fit Printed Shirt</p>
+        <p>Category: men</p>
+        <p>Brand: blackberrys</p>
+        <h5>Price: 💲699</h5>
+        <button class="btn-add" onclick="addToCart(${i})">Add to Cart</button>
+      </div> -->
+    </div>
+
+    <!-- var obj = {
+      id: 1,
+      brand: "roadster",
+      title: "cotton Checked Casual Shirt",
+      image: "https://picsum.photos/200",
+      category: "men",
+      price: 844,
+    }; -->
+    <script>
+      var container = document.querySelector(".container");
+      var formEl = document.querySelector("form");
+      var searchEl = document.querySelector("#search").value;
+      formEl.addEventListener("submit", (e) => {
+        e.preventDefault();
+        getData(searchEl);
+      });
+      var api = `https://dbioz2ek0e.execute-api.ap-south-1.amazonaws.com/mockapi/get-products`;
+      var getData = async (query = "") => {
+        try {
+          var response = await fetch(`${api}`);
+          var result = await response.json();
+          renderData(result);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      function renderData(result) {
+        var arr = result.data;
+        arr.forEach((each) => console.dir(each));
+        var html = "";
+        arr.forEach((each,i) => {
+          html += `
+          <div class="card">
+            <img src="${each.image}" />
+            <p>${each.title}</p>
+            <p>Category: ${each.category}</p>
+            <p>Brand: ${each.brand}</p>
+            <h5>Price: 💲${each.price}</h5>
+            <button class="btn-add" onclick="addToCart(${i})">Add to Cart</button>
+          </div>
+          `;
+          container.innerHTML += html;
+        });
+      }
+      function addToCart(index){
+        localStorage.setItem("cart", index)
+      }
+    </script>
+  </body>
 </html>
